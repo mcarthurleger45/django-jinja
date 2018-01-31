@@ -1,6 +1,9 @@
 """
 Api for django <= 1.7.x that uses loader extending
 way for get it working.
+
+Also enhancements to get it working with
+django-dbtemplates loader.
 """
 
 import re
@@ -11,6 +14,11 @@ from django.template import TemplateDoesNotExist
 from django.template.loaders import app_directories
 from django.template.loaders import filesystem
 from . import base
+
+if 'dbtemplates' in settings.INSTALLED_APPS:
+    from dbtemplates import loader as dbloader
+else:
+    dbloader = filesystem
 
 if hasattr(settings, "DEFAULT_JINJA2_TEMPLATE_INTERCEPT_RE"):
     INTERCEPT_RE = getattr(settings, "DEFAULT_JINJA2_TEMPLATE_INTERCEPT_RE")
@@ -43,4 +51,8 @@ class FileSystemLoader(LoaderMixin, filesystem.Loader):
 
 
 class AppLoader(LoaderMixin, app_directories.Loader):
+    pass
+
+
+class DBLoader(LoaderMixin, dbloader.Loader):
     pass
